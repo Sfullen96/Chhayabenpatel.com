@@ -6,6 +6,7 @@
 
 class PortfolioItem {
     public function __construct() {
+
     }
 
     public static function create() {
