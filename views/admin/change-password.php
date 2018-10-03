@@ -1,6 +1,6 @@
 <?php
-require_once 'core/init.php';
-include 'includes/header.php';
+require_once '../../core/init.php';
+include '../includes/header.php';
 $user = new User();
 if (!$user->isLoggedIn()) {
 	Redirect::to('index.php');
@@ -100,5 +100,5 @@ if (Input::exists()) {
 	<button type="submit" class="btn btn-primary"> Change Password </button>
 </form>
 <?php
-include 'includes/footer.php';
+include '../includes/footer.php';
 ?>?>

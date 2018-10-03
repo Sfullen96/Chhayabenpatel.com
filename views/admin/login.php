@@ -1,11 +1,8 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 'On');
-require_once '../core/init.php';
-include 'includes/header.php';
+require_once '../../core/init.php';
+include '../includes/header.php';
 if (Input::exists()) { // Has form been submitted?
 	if (Token::check(Input::get('token'))) {
-		
 		$validate = new Validate();
 		$validation = $validate->check($_POST, array(
 			'email' => array(
@@ -57,4 +54,4 @@ if (Input::exists()) { // Has form been submitted?
 	<input type="hidden" name="token" value="<?= Token::generate(); ?>">
 	<button type="submit" class="btn btn-primary"> Login </button>
 </form>
-<?php include 'includes/footer.php'; ?>
+<?php include '../includes/footer.php'; ?>

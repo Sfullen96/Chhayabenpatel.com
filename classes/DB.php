@@ -27,7 +27,7 @@ class DB {
 	// instantiated once
 	private function __construct() {
 		try {
-			$this->_pdo = new PDO('mysql:host='.Config::get('mysql/host'). ';dbname='.Config::get('mysql/db'), Config::get('mysql/username'), Config::get('mysql/password'));
+			$this->_pdo = new PDO('mysql:host='.Config::get('mysql/host'). ';port='.Config::get('mysql/port').';dbname='.Config::get('mysql/db'), Config::get('mysql/username'), Config::get('mysql/password'));
 		} catch (PDOException $e) {
 			die($e->getMessage());
 		}
@@ -158,14 +158,15 @@ class DB {
 
 			// Check if query successfully executed
 			if ($this->_query->execute()) {
-				$this->_results = $this->_query->fetchAll(PDO::FETCH_OBJ);
 				$this->_count = $this->_query->rowCount();
+                $this->_results = $this->_query->fetchAll(PDO::FETCH_OBJ);
 				$this->_sql = '';
 			} else {
 				$this->_sql = '';
 				$this->_error = true;
 			}
 		}
+
 		return $this; // return current object
 	}
 

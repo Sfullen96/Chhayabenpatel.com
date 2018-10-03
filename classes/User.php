@@ -48,12 +48,6 @@ class User {
 		}
 	}
 
-	public function createAddress($fields = array()) {
-		if (!$this->_db->insert('user_address', $fields)) {
-			throw new Exception('There was a problem creating your account');
-		}
-	}
-
 	public function find($user = null) {
 		if ($user) {
 			$field = (is_numeric($user)) ? 'id' : 'email';
@@ -70,8 +64,6 @@ class User {
 	}
 
 	public function login($email = null, $password = null, $remember = false) {
-		
-		
 		if (!$email && !$password && $this->exists()) {
 			 // Login
 			Session::put($this->_sessionName, $this->data()->id);
@@ -79,7 +71,9 @@ class User {
 			$user = $this->find($email);
 
 			if ($user) {
-				if ($this->data()->password === Hash::make($password, $this->data()->salt)) {
+			    echo $this->_data->password . ' - ' . Hash::make($password);
+			    
+				if ($this->data()->password === Hash::make($password)) {
 					Session::put($this->_sessionName, $this->data()->id);
 
 					if ($remember) {
@@ -127,21 +121,5 @@ class User {
 	// getter
 	public function isLoggedIn() {
 		return $this->_isLoggedIn;
-	}
-
-	public function hasPermission($key) {
-		$group = $this->_db
-				->select('user_groups')
-				->where(array('id', '=', $this->data()->user_group))
-				->get();
-		
-		if ($group->count()) {
-			$permissions = json_decode($group->first()->permissions, true);
-
-			if ($permissions[$key] == true) {
-				return true;
-			}
-		}
-		return false;
 	}
 }
