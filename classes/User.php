@@ -37,15 +37,23 @@ class User {
 			$id = $this->data()->id;
 		}
 
-		if (!$this->_db->update('users', 'id', $id, $fields)) {
-			throw new Exception('There was a problem updating your account.');
-		}
+		try {
+            if (!$this->_db->update('users', 'id', $id, $fields)) {
+                throw new Exception('There was a problem updating your account.');
+            }
+        } catch (Exception $exception) {
+            echo 'Caught Exception: ' . $exception;
+        }
 	}
 
 	public function create($fields = array()) {
-		if (!$this->_db->insert('users', $fields)) {
-			throw new Exception('There was a problem creating your account');
-		}
+	    try {
+            if (!$this->_db->insert('users', $fields)) {
+                throw new Exception('There was a problem creating your account');
+            }
+        } catch (Exception $exception) {
+	        echo 'Caught Exception: ' . $exception;
+        }
 	}
 
 	public function find($user = null) {
@@ -72,7 +80,7 @@ class User {
 
 			if ($user) {
 			    echo $this->_data->password . ' - ' . Hash::make($password);
-			    
+
 				if ($this->data()->password === Hash::make($password)) {
 					Session::put($this->_sessionName, $this->data()->id);
 

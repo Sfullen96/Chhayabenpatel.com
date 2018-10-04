@@ -2,6 +2,8 @@
 <html>
     <head>
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <script src="https://cloud.tinymce.com/stable/tinymce.min.js?apiKey=q0orus2bdfdbdpmwes0s8fh8gabyshd9tvnivh456pcka9zd"></script>
+        <script>tinymce.init({ selector:'textarea' });</script>
     </head>
     <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">

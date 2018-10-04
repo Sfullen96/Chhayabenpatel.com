@@ -10,8 +10,14 @@ class PortfolioItem {
     public function __construct() {
         $this->_db = DB::getInstance();
     }
-    public static function create() {
-
+    public function create($fields = array()) {
+        try {
+            if (!$this->_db->insert('portfolio_items', $fields)) {
+                throw new Exception('There was a problem creating your portfolio item');
+            }
+        } catch (Exception $exception) {
+            echo 'Caught Exception: ' . $exception;
+        }
     }
 
     public static function update() {
