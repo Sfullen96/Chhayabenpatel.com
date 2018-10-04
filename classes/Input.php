@@ -26,4 +26,11 @@ class Input {
 		return '';
 	}
 
+	public static function getFiles() {
+	    if (isset($_FILES)) {
+	        return $_FILES;
+        }
+
+        return false;
+    }
 }
