@@ -10,13 +10,24 @@ class PortfolioItem {
     public function __construct() {
         $this->_db = DB::getInstance();
     }
+
     public function create($fields = array()) {
         try {
             if (!$this->_db->insert('portfolio_items', $fields)) {
                 throw new Exception('There was a problem creating your portfolio item');
             }
         } catch (Exception $exception) {
-            echo 'Caught Exception: ' . $exception;
+            return $exception->getMessage();
+        }
+    }
+
+    public function createImage($portfolioItemId, $filename) {
+        try {
+            if (!$this->_db->insert('portfolio_item_images', ['portfolio_item_id' => $portfolioItemId, 'image' => $filename])) {
+                throw new Exception('There was a problem creating your portfolio item');
+            }
+        } catch (Exception $exception) {
+            return $exception->getMessage();
         }
     }
 
@@ -42,6 +53,8 @@ class PortfolioItem {
         $allItems = $this
             ->_db
             ->select('portfolio_items')
+            ->join('left', 'portfolio_item_images', ['portfolio_item_id', '=', 'portfolio_items.id'])
+            ->where(['portfolio_items.deleted_at', 'IS', null])
             ->get();
 
         if ($allItems->count() > 0) {

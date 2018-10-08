@@ -1,10 +1,8 @@
 <?php
     require_once '../../core/init.php';
-
+error_reporting(E_ALL);
+ini_set('display_errors', 'On');
     if (Input::exists()) {
-        echo "<pre>" . print_r(Input::getFiles(), TRUE) . "</pre>";
-        die();
-
         $portfolioItem = new PortfolioItem();
         $validate = new Validate();
 
@@ -26,6 +24,23 @@
                     'title' => Input::get('title'),
                     'description' => Input::get('description'),
                 ));
+
+                if (count(Input::getFiles()) > 0) {
+                    $images = Input::getFiles();
+
+                    for ($i = 0; $i < count($images['fileUpload']['name']) - 1; $i++) {
+                        $tmpFilePath = $_FILES['fileUpload']['tmp_name'][$i];
+
+                        if ($tmpFilePath != "") {
+                            //Setup our new file path
+                            $newFilePath = "../../uploads/" . md5(date('dd/mm/yy h:i:s')) . $_FILES['fileUpload']['name'][$i];
+
+                            if (move_uploaded_file($tmpFilePath, $newFilePath)) {
+                                $portfolioItem->createImage(1, md5(date('dd/mm/yy h:i:s')) . $_FILES['fileUpload']['name'][$i], 1);
+                            }
+                        }
+                    }
+                }
 
                 Session::flash('success', 'Success!');
                 Redirect::to('../index.php');
@@ -71,11 +86,6 @@
 <script>
     $("#imageUpload").spartanMultiImagePicker({
         fieldName:   'fileUpload[]',
-        onAddRow:       function(index){
-            console.log(index);
-            console.log('add new row');
-            console.log($('input[name^="fileUpload"]').value);
-        },
     });
     // $("#demo").spartanMultiImagePicker({
     //     rowHeight : '200px',

@@ -31,6 +31,6 @@ class Input {
 	        return $_FILES;
         }
 
-        return false;
+        return [];
     }
 }

@@ -17,7 +17,7 @@ $count = 0;
     <?php foreach ($allItems as $item) { ?>
         <?php if ($count % 2 == 0) { ?>
             <div class="col-2">
-                IMAGE HERE
+                <img src=<?= $item->image ? '../uploads/' . $item->image : '' ?> alt="" class="img-responsive" width="100">
             </div>
             <div class="col-10">
                 <h3><?= $item->title; ?></h3>

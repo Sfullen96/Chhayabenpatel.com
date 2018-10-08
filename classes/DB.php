@@ -28,7 +28,8 @@ class DB {
 	private function __construct() {
 		try {
 			$this->_pdo = new PDO('mysql:host='.Config::get('mysql/host'). ';port='.Config::get('mysql/port').';dbname='.Config::get('mysql/db'), Config::get('mysql/username'), Config::get('mysql/password'));
-		} catch (PDOException $e) {
+            $this->_pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+        } catch (PDOException $e) {
 			die($e->getMessage());
 		}
 
@@ -72,9 +73,8 @@ class DB {
 	}
 
 	public function where($where = array()) {
-
 		if (count($where) === 3) { // SOMETHING - OPERATOR - SOMETHING e.g name = Sam
-			$operators = array('=', '>', '<', '>=', '<=', 'LIKE');
+			$operators = array('=', '>', '<', '>=', '<=', 'LIKE', 'IS', 'IS NOT');
 
 			$field 		= $where[0];
 			$operator 	= $where[1];
@@ -85,8 +85,6 @@ class DB {
 			//} else {
 				//$this->_params = array($value);
 			//}
-			
-			
 
 			// Check if allowed operator
 			if (in_array($operator, $operators)) {
@@ -141,8 +139,10 @@ class DB {
 	
 	public function query($sql, $params = array()) {
 		$this->_error = false; // incase we do multiple queries on one page, and one errors we need to reset the error
-		$this->_params = array();
+		$this->_params = [];
 		$this->_paramCount = 0;
+		$this->_results = null;
+
 
 		// Check if query prepared correctly
 		if ($this->_query = $this->_pdo->prepare($sql)) {
@@ -150,7 +150,7 @@ class DB {
 			$x = 1;
 			// echo count($params);
 			if (count($params)) {
-				foreach ($params as $param) {
+                foreach ($params as $param) {
 					$this->_query->bindValue($x, $param);
 					$x++;
 				}
@@ -158,7 +158,7 @@ class DB {
 
 			// Check if query successfully executed
 			if ($this->_query->execute()) {
-				$this->_count = $this->_query->rowCount();
+                $this->_count = $this->_query->rowCount();
                 $this->_results = $this->_query->fetchAll(PDO::FETCH_OBJ);
 				$this->_sql = '';
 			} else {
@@ -242,8 +242,8 @@ class DB {
 		return $this; // return current object
 	}
 
-	public function insert($table, $fields = array()) {
-		$keys = array_keys($fields);
+	public function insert($table, $fields = []) {
+        $keys = array_keys($fields);
 		$values = null;
 		$x = 1; // Counter	
 
@@ -257,7 +257,7 @@ class DB {
 		}
 
 		$sql = "INSERT INTO {$table} (`". implode('`, `', $keys) ."`) VALUES ({$values})";
-		
+
 		if (!$this->query($sql, $fields)->error()) {
 			return true;
 		}
